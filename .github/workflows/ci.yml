@@ -1,0 +1,53 @@
+name: PulseCI - Automated CI Pipeline
+
+# Workflow triggers
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Job definitions
+jobs:
+  build-and-test:
+    name: Build, Run, and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python runtime environment
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      # Step 3: Install project dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Execute the application
+      - name: Execute application
+        run: |
+          echo "Running PulseCI Application..."
+          python app.py
+
+      # Step 5: Run automated test suite with Pytest
+      - name: Run Pytest test suite
+        run: |
+          echo "Running automated unit and boundary tests..."
+          pytest -v --junitxml=pytest-results.xml
+
+      # Step 6: Pipeline status summary
+      - name: CI Completion Notice
+        if: success()
+        run: |
+          echo "### PulseCI Build & Test Successful! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "All unit tests, boundary validations, and app execution passed without errors." >> $GITHUB_STEP_SUMMARY
