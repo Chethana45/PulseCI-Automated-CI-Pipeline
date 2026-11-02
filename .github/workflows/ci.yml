@@ -1,7 +1,7 @@
 name: PulseCI - Automated CI Pipeline
 
 # Workflow triggers
-on:
+'on':
   push:
     branches:
       - main
