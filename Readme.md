@@ -173,14 +173,6 @@ When a test fails or a workflow step encounters an error, GitHub Actions marks t
 
 </details>
 
-## 📸 Project Screenshots
-
-Add your actual screenshots here after running the project:
-
-- GitHub repository
-- GitHub Actions workflow execution
-- Successful CI pipeline
-- Pytest test results
 
 ## 📚 Key DevOps Concepts Learned
 
