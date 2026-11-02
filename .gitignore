@@ -3,8 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Pytest cache
+# Pytest cache and test artifacts
 .pytest_cache/
+pytest-results.xml
+.coverage
+htmlcov/
 
 # Virtual environments
 .venv/

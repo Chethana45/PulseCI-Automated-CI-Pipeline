@@ -1,7 +1,7 @@
 # PulseCI – Automated CI Pipeline
 
-[![PulseCI - Automated CI Pipeline](https://github.com/YOUR_USERNAME/PulseCI/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/PulseCI/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![PulseCI - Automated CI Pipeline](https://github.com/Chethana45/PulseCI/actions/workflows/ci.yml/badge.svg)](https://github.com/Chethana45/PulseCI/actions/workflows/ci.yml)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
 [![Tested with Pytest](https://img.shields.io/badge/tested_with-pytest-yellow.svg)](https://docs.pytest.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -20,11 +20,12 @@ A beginner-friendly DevOps Continuous Integration (CI) project that automates de
   - [Prerequisites](#prerequisites)
   - [Option A: WSL2 Ubuntu (Recommended)](#option-a-wsl2-ubuntu-recommended)
   - [Option B: Windows PowerShell](#option-b-windows-powershell)
-- [Running the Application](#-running-the-application)
+- [Running the Application Locally](#-running-the-application-locally)
 - [Running Automated Tests](#-running-automated-tests)
 - [How GitHub Actions Works](#-how-github-actions-works)
 - [Pushing to GitHub & Triggering the Pipeline](#-pushing-to-github--triggering-the-pipeline)
 - [Screenshots & Verification](#-screenshots--verification)
+- [Learning Outcomes](#-learning-outcomes)
 - [Future Enhancements](#-future-enhancements)
 
 ---
@@ -36,18 +37,18 @@ A beginner-friendly DevOps Continuous Integration (CI) project that automates de
 Whenever a developer pushes new code or opens a Pull Request against the `main` branch, a GitHub Actions runner automatically:
 1. Provisions a clean Ubuntu virtual machine.
 2. Checks out the repository code.
-3. Configures the Python 3.11 runtime environment.
-4. Installs required project dependencies.
-5. Executes the core application logic.
+3. Configures the Python 3.12 runtime environment.
+4. Installs required project dependencies from `requirements.txt`.
+5. Executes the core application logic to verify runtime stability.
 6. Runs a suite of unit, boundary, and error-handling tests using `pytest`.
-7. Generates a clear pass/fail status report.
+7. Generates a clear pass/fail status report and step summary.
 
 ---
 
 ## 🛑 Problem Statement
 
 In traditional software development without CI:
-- Developers test code only on their local machines ("*It works on my machine!*").
+- Developers test code only on their local machines (*"It works on my machine!"* syndrome).
 - Broken code, missing dependencies, or failing regression tests are frequently merged into production branches.
 - Manual testing before each release is slow, repetitive, and error-prone.
 - Teams lack real-time visibility into the health and stability of the codebase.
@@ -58,7 +59,7 @@ In traditional software development without CI:
 
 **PulseCI** introduces an automated feedback loop:
 - **Instant Feedback:** Every code change pushed to GitHub is validated in seconds.
-- **Consistent Testing Environment:** Every build runs in an isolated, standardized container/runner, eliminating environment discrepancies.
+- **Consistent Testing Environment:** Every build runs in an isolated, standardized runner (`ubuntu-latest`), eliminating environment discrepancies.
 - **Quality Gate:** Failing tests immediately block bad code from entering the repository.
 - **Zero Manual Effort:** Testing and verification require zero manual intervention from developers.
 
@@ -68,19 +69,19 @@ In traditional software development without CI:
 
 ```mermaid
 flowchart TD
-    A[Developer edits code locally] -->|git push / pull request| B[GitHub Repository (main branch)]
-    B -->|Webhook Trigger| C[GitHub Actions Runner (ubuntu-latest)]
+    A["Developer commits code locally (WSL2 / Windows)"] -->|git push / pull request| B["GitHub Repository (Chethana45/PulseCI)"]
+    B -->|Webhook Trigger| C["GitHub Actions Cloud Runner (ubuntu-latest)"]
     
     subgraph CI Pipeline Execution
-        C --> D[Step 1: actions/checkout@v4]
-        D --> E[Step 2: actions/setup-python@v5]
-        E --> F[Step 3: Install dependencies via pip]
-        F --> G[Step 4: Execute python app.py]
-        G --> H[Step 5: Run pytest -v test_app.py]
+        C --> D["Step 1: actions/checkout@v4"]
+        D --> E["Step 2: actions/setup-python@v5 (Python 3.12)"]
+        E --> F["Step 3: Install dependencies via pip"]
+        F --> G["Step 4: Execute python app.py"]
+        G --> H["Step 5: Run pytest -v test_app.py"]
     end
     
-    H -->|All Tests Pass| I[Green Build / Step Summary Published]
-    H -->|Any Test Fails| J[Red Build / Merge Blocked & Alert]
+    H -->|All Tests Pass| I["✅ Green Build / Step Summary Published"]
+    H -->|Any Test Fails| J["❌ Red Build / Pull Request Blocked & Alert Sent"]
 ```
 
 ---
@@ -89,18 +90,19 @@ flowchart TD
 
 | Technology | Purpose |
 | :--- | :--- |
-| **Python 3.11+** | Application programming language |
-| **Pytest** | Testing framework for unit and boundary tests |
+| **Python 3.12** | Core programming language for application and tests |
+| **Pytest** | Testing framework for unit, boundary, and error validation |
 | **Git** | Distributed version control system |
-| **GitHub** | Remote repository hosting and collaboration |
+| **GitHub** | Cloud-hosted Git repository and collaboration platform |
 | **GitHub Actions** | Cloud-native Continuous Integration (CI) platform |
-| **YAML** | Declarative pipeline configuration format |
+| **YAML** | Declarative configuration format for CI pipelines |
+| **WSL2 (Ubuntu)** | Local Linux development environment on Windows |
 
 ---
 
 ## 📂 Project Structure
 
-```
+```text
 PulseCI/
 ├── .github/
 │   └── workflows/
@@ -114,7 +116,7 @@ PulseCI/
 
 ### File Breakdown:
 - **`app.py`**: Contains core pricing calculations (`calculate_discount`, `calculate_total_price`, and `validate_number`). Includes an executable `main()` demo.
-- **`test_app.py`**: Automated test suite containing 8 test cases covering standard inputs, boundary values (0%, 100%, single item), and invalid inputs (negative prices, strings, invalid ranges).
+- **`test_app.py`**: Automated test suite containing 9 test cases covering standard inputs, boundary values (0%, 100%, single item), and invalid inputs (negative prices, strings, invalid ranges).
 - **`requirements.txt`**: Specifies test dependencies (`pytest>=7.4.0`).
 - **`.gitignore`**: Prevents Python cache (`__pycache__`), virtual environments (`.venv`), and test artifacts from polluting Git.
 - **`.github/workflows/ci.yml`**: The CI configuration file instructing GitHub Actions what steps to run on every push and PR.
@@ -180,7 +182,7 @@ Make sure you have either **WSL2 (Ubuntu)** or **Windows with Python 3** install
 
 ---
 
-## 🚀 Running the Application
+## 🚀 Running the Application Locally
 
 To execute the application and see the pricing engine in action:
 
@@ -222,18 +224,19 @@ pytest -v
 **Expected Output:**
 ```text
 ============================= test session starts ==============================
-collected 8 items
+collected 9 items
 
-test_app.py::test_calculate_discount_normal PASSED                      [ 12%]
-test_app.py::test_calculate_total_price_normal PASSED                   [ 25%]
-test_app.py::test_calculate_discount_zero_percent PASSED                [ 37%]
-test_app.py::test_calculate_discount_full_hundred_percent PASSED        [ 50%]
-test_app.py::test_calculate_total_price_minimum_quantity_and_zero_tax PASSED [ 62%]
-test_app.py::test_calculate_discount_exceeding_max_percentage PASSED    [ 75%]
-test_app.py::test_calculate_total_price_negative_unit_price PASSED     [ 87%]
-test_app.py::test_calculate_total_price_zero_quantity PASSED            [100%]
+test_app.py::test_calculate_discount_normal PASSED                       [ 11%]
+test_app.py::test_calculate_total_price_normal PASSED                    [ 22%]
+test_app.py::test_calculate_discount_zero_percent PASSED                 [ 33%]
+test_app.py::test_calculate_discount_full_hundred_percent PASSED         [ 44%]
+test_app.py::test_calculate_total_price_minimum_quantity_and_zero_tax PASSED [ 55%]
+test_app.py::test_calculate_discount_exceeding_max_percentage PASSED     [ 66%]
+test_app.py::test_calculate_total_price_negative_unit_price PASSED       [ 77%]
+test_app.py::test_calculate_total_price_zero_quantity PASSED             [ 88%]
+test_app.py::test_validate_number_non_numeric_type PASSED                [100%]
 
-============================== 8 passed in 0.05s ===============================
+============================== 9 passed in 0.19s ===============================
 ```
 
 ### Test Case Overview:
@@ -245,6 +248,7 @@ test_app.py::test_calculate_total_price_zero_quantity PASSED            [100%]
 6. `test_calculate_discount_exceeding_max_percentage`: Error test asserting rejection of > 100% discount.
 7. `test_calculate_total_price_negative_unit_price`: Error test asserting rejection of negative prices.
 8. `test_calculate_total_price_zero_quantity`: Error test asserting quantity cannot be 0.
+9. `test_validate_number_non_numeric_type`: Error test asserting rejection of non-numeric data types.
 
 ---
 
@@ -252,7 +256,7 @@ test_app.py::test_calculate_total_price_zero_quantity PASSED            [100%]
 
 The automated pipeline is defined in `.github/workflows/ci.yml`. Here is how each component works:
 
-1. **Triggers (`on:`):**
+1. **Triggers (`'on':`):**
    - Listens for `push` events to `main`.
    - Listens for `pull_request` events targeting `main`.
 2. **Runner (`runs-on: ubuntu-latest`):**
@@ -260,73 +264,72 @@ The automated pipeline is defined in `.github/workflows/ci.yml`. Here is how eac
 3. **Checkout (`actions/checkout@v4`):**
    - Clones your repository into the runner's workspace.
 4. **Python Setup (`actions/setup-python@v5`):**
-   - Installs the specified Python version (`3.11`) and enables pip dependency caching.
+   - Installs Python 3.12 and enables pip dependency caching.
 5. **Dependency Installation (`pip install`):**
    - Upgrades pip and installs all packages listed in `requirements.txt`.
-6. **Execution & Pytest:**
-   - Runs `python app.py` to ensure the program executes without crashes.
+6. **Application Execution:**
+   - Runs `python app.py` to ensure the program executes cleanly without runtime crashes.
+7. **Pytest Suite:**
    - Runs `pytest -v` to validate all business rules and edge cases.
-7. **Job Status & Summary:**
-   - If all steps exit with code `0`, GitHub marks the workflow with a green checkmark (`✔`).
-   - If any step fails (exit code != 0), the workflow turns red (`✖`) and stops, alerting the author.
+8. **Job Status & Summary:**
+   - If all steps exit with code `0`, GitHub marks the workflow with a green checkmark (`✔`) and writes a success summary.
+   - If any step fails (exit code != 0), the workflow turns red (`✖`), writes a failure notice, and halts further progress.
 
 ---
 
 ## 📤 Pushing to GitHub & Triggering the Pipeline
 
-Follow these steps to publish your project and watch your pipeline run live:
+Follow these steps to publish your project and trigger your pipeline:
 
 ### 1. Initialize Git and Commit
 ```bash
 git init
-git add .
-git commit -m "feat: initial PulseCI setup with app, tests, and CI workflow"
-```
-
-### 2. Rename Default Branch to `main`
-```bash
 git branch -M main
+git add .
+git commit -m "Build PulseCI automated CI pipeline"
 ```
 
-### 3. Create a GitHub Repository
-1. Go to [GitHub.com](https://github.com) and click **New Repository**.
-2. Name it **`PulseCI`** (or your preferred name).
-3. Leave "Initialize with README" **unchecked** (we already have one).
-4. Click **Create repository**.
-
-### 4. Link Remote and Push
+### 2. Configure Remote URL
 ```bash
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/PulseCI.git
+git remote add origin https://github.com/Chethana45/PulseCI.git
+```
+
+### 3. Push to GitHub
+```bash
 git push -u origin main
 ```
-
-### 5. Verify the Workflow on GitHub
-1. Navigate to your repository on GitHub.
-2. Click on the **Actions** tab at the top.
-3. You will see the **`PulseCI - Automated CI Pipeline`** workflow running.
-4. Click on the workflow run to view the live logs for each step (**Checkout**, **Install dependencies**, **Execute application**, and **Run Pytest**).
-5. When complete, a green checkmark will appear!
 
 ---
 
 ## 📸 Screenshots & Verification
 
-> Once your workflow completes on GitHub, take screenshots of your run and place them in an `assets/` or `docs/` folder, or embed them directly here.
+> Once your workflow completes on GitHub, you can add screenshots of your run to this section.
 
 | Workflow Run Overview | Pytest Execution in GitHub Actions |
 | :---: | :---: |
-| *[Add screenshot of GitHub Actions list with green checkmark]* | *[Add screenshot of expanded Pytest step showing 8 passed tests]* |
+| *GitHub Actions workflow list with green checkmark (✔)* | *Expanded Pytest step log showing all 9 passed tests* |
+
+---
+
+## 🧠 Learning Outcomes
+
+By building and running **PulseCI**, you have mastered several core DevOps principles:
+1. **Continuous Integration (CI):** Understand how automated pipelines replace manual testing and prevent broken code from merging.
+2. **Automated Quality Gates:** Implement unit tests, boundary validations, and error assertions that automatically approve or reject pull requests.
+3. **Infrastructure as Code (IaC) & Workflow as Code:** Write declarative YAML pipelines to provision environments on demand in GitHub's cloud.
+4. **Environment Parity:** Replicate consistent results across Windows, WSL2 Ubuntu, and cloud Linux runners.
+5. **Git Hygiene:** Use `.gitignore` to maintain clean repository trees free of compiled bytecode and local virtual environments.
 
 ---
 
 ## 🔮 Future Enhancements
 
-As you grow your DevOps skills, here are great next steps to extend this project:
-- [ ] **Code Linting & Formatting:** Add `ruff` or `flake8` and `black` to check code quality in CI.
-- [ ] **Test Coverage Reports:** Integrate `pytest-cov` and upload coverage reports to [Codecov](https://codecov.io/).
-- [ ] **Matrix Builds:** Test across multiple Python versions (`3.10`, `3.11`, `3.12`) simultaneously.
-- [ ] **Security Scanning:** Add `bandit` or `safety` to scan for known vulnerabilities in Python dependencies.
-- [ ] **ChatOps Notifications:** Send a Slack or Discord webhook alert whenever a build fails.
+As you continue your DevOps journey, here are recommended additions to expand PulseCI:
+- [ ] **Code Linting & Formatting:** Add `ruff` or `flake8` to enforce PEP 8 style standards automatically in CI.
+- [ ] **Test Coverage Reports:** Integrate `pytest-cov` and upload coverage badges to [Codecov](https://codecov.io/).
+- [ ] **Multi-Version Matrix Builds:** Test concurrently against Python `3.10`, `3.11`, `3.12`, and `3.13`.
+- [ ] **Security Scanning:** Integrate `bandit` to identify security vulnerabilities in Python code.
+- [ ] **ChatOps Notifications:** Send a Discord or Slack notification when a pipeline fails.
 
 ---
 
