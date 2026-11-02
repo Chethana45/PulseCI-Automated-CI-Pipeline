@@ -1,205 +1,150 @@
-# PulseCI – Automated CI Pipeline
+# ⚡ PulseCI — Automated CI Pipeline
 
-[![PulseCI - Automated CI Pipeline](https://github.com/Chethana45/PulseCI/actions/workflows/ci.yml/badge.svg)](https://github.com/Chethana45/PulseCI/actions/workflows/ci.yml)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
-[![Tested with Pytest](https://img.shields.io/badge/tested_with-pytest-yellow.svg)](https://docs.pytest.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+### Every push. Automatically tested. Always reliable.
 
-A beginner-friendly DevOps Continuous Integration (CI) project that automates dependency management, application verification, and test execution using **GitHub Actions**.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/GitHub%20Actions-CI/CD-2088FF?logo=githubactions&logoColor=white" />
+  <img src="https://img.shields.io/badge/Testing-Pytest-yellow?logo=pytest&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tests-9%20Passed-success" />
+  <img src="https://img.shields.io/badge/License-MIT-green" />
+</p>
+
+<p align="center">
+  <b>A beginner-friendly DevOps project demonstrating Continuous Integration through GitHub Actions and automated Python testing.</b>
+</p>
 
 ---
 
 ## 📌 Table of Contents
-- [Project Overview](#-project-overview)
-- [Problem Statement](#-problem-statement)
-- [Solution](#-solution)
-- [Architecture Diagram](#-architecture-diagram)
-- [Technology Stack](#-technology-stack)
+
+- [Overview](#-overview)
+- [The Problem](#-the-problem)
+- [The Solution](#-the-solution)
+- [System Architecture](#-system-architecture)
+- [How It Works](#-how-it-works)
 - [Project Structure](#-project-structure)
-- [Local Setup & Installation](#-local-setup--installation)
-  - [Prerequisites](#prerequisites)
-  - [Option A: WSL2 Ubuntu (Recommended)](#option-a-wsl2-ubuntu-recommended)
-  - [Option B: Windows PowerShell](#option-b-windows-powershell)
-- [Running the Application Locally](#-running-the-application-locally)
-- [Running Automated Tests](#-running-automated-tests)
-- [How GitHub Actions Works](#-how-github-actions-works)
-- [Pushing to GitHub & Triggering the Pipeline](#-pushing-to-github--triggering-the-pipeline)
-- [Screenshots & Verification](#-screenshots--verification)
+- [Technology Stack](#-technology-stack)
+- [Application Functionality](#-application-functionality)
+- [Test Cases](#-test-cases)
+- [Getting Started](#-getting-started)
+- [Running the CI Pipeline](#-running-the-ci-pipeline)
+- [Results](#-results)
+- [Future Improvements](#-future-improvements)
 - [Learning Outcomes](#-learning-outcomes)
-- [Future Enhancements](#-future-enhancements)
 
 ---
 
-## 📖 Project Overview
+## 🚀 Overview
 
-**PulseCI** demonstrates the foundational building block of modern DevOps: **Automated Continuous Integration (CI)**.
+**PulseCI** is a Python-based Continuous Integration project that automates application testing using GitHub Actions.
 
-Whenever a developer pushes new code or opens a Pull Request against the `main` branch, a GitHub Actions runner automatically:
-1. Provisions a clean Ubuntu virtual machine.
-2. Checks out the repository code.
-3. Configures the Python 3.12 runtime environment.
-4. Installs required project dependencies from `requirements.txt`.
-5. Executes the core application logic to verify runtime stability.
-6. Runs a suite of unit, boundary, and error-handling tests using `pytest`.
-7. Generates a clear pass/fail status report and step summary.
+The project combines a simple E-Commerce Pricing Engine with an automated CI workflow. Whenever code is pushed to the GitHub repository, the workflow automatically prepares the Python environment, installs dependencies, and executes the test suite using Pytest.
 
----
+The goal is simple: reduce repetitive manual testing and catch errors earlier in the development process.
 
-## 🛑 Problem Statement
+## ❗ The Problem
 
-In traditional software development without CI:
-- Developers test code only on their local machines (*"It works on my machine!"* syndrome).
-- Broken code, missing dependencies, or failing regression tests are frequently merged into production branches.
-- Manual testing before each release is slow, repetitive, and error-prone.
-- Teams lack real-time visibility into the health and stability of the codebase.
+During application development, even a small code change can introduce unexpected bugs.
 
----
+Running tests manually after every modification can become repetitive, time-consuming, and easy to forget.
 
-## 💡 Solution
+This creates a simple but important question:
 
-**PulseCI** introduces an automated feedback loop:
-- **Instant Feedback:** Every code change pushed to GitHub is validated in seconds.
-- **Consistent Testing Environment:** Every build runs in an isolated, standardized runner (`ubuntu-latest`), eliminating environment discrepancies.
-- **Quality Gate:** Failing tests immediately block bad code from entering the repository.
-- **Zero Manual Effort:** Testing and verification require zero manual intervention from developers.
+**Why should developers manually verify every code change when the testing process can be automated?**
 
----
+## 💡 The Solution
 
-## 🏗️ Architecture Diagram
+I built PulseCI to demonstrate how Continuous Integration can solve this problem.
+
+Instead of manually executing the test suite after every update, GitHub Actions automatically runs the tests whenever code is pushed to the repository.
+
+If all tests pass, the workflow reports success. If a test fails, the workflow reports failure, making the issue visible.
+
+## 🏗️ System Architecture
 
 ```mermaid
 flowchart TD
-    A["Developer commits code locally (WSL2 / Windows)"] -->|git push / pull request| B["GitHub Repository (Chethana45/PulseCI)"]
-    B -->|Webhook Trigger| C["GitHub Actions Cloud Runner (ubuntu-latest)"]
-    
-    subgraph CI Pipeline Execution
-        C --> D["Step 1: actions/checkout@v4"]
-        D --> E["Step 2: actions/setup-python@v5 (Python 3.12)"]
-        E --> F["Step 3: Install dependencies via pip"]
-        F --> G["Step 4: Execute python app.py"]
-        G --> H["Step 5: Run pytest -v test_app.py"]
-    end
-    
-    H -->|All Tests Pass| I["✅ Green Build / Step Summary Published"]
-    H -->|Any Test Fails| J["❌ Red Build / Pull Request Blocked & Alert Sent"]
+    A["👩‍💻 Developer"] --> B["Git Push"]
+    B --> C["GitHub Repository"]
+    C --> D["GitHub Actions Trigger"]
+    D --> E["Checkout Source Code"]
+    E --> F["Set Up Python Environment"]
+    F --> G["Install Dependencies"]
+    G --> H["Execute Pytest"]
+    H --> I{"All Tests Passed?"}
+    I -->|Yes| J["✅ CI Pipeline Successful"]
+    I -->|No| K["❌ CI Pipeline Failed"]
 ```
 
----
+## ⚙️ How It Works
 
-## 🛠️ Technology Stack
+PulseCI follows an automated workflow:
 
-| Technology | Purpose |
-| :--- | :--- |
-| **Python 3.12** | Core programming language for application and tests |
-| **Pytest** | Testing framework for unit, boundary, and error validation |
-| **Git** | Distributed version control system |
-| **GitHub** | Cloud-hosted Git repository and collaboration platform |
-| **GitHub Actions** | Cloud-native Continuous Integration (CI) platform |
-| **YAML** | Declarative configuration format for CI pipelines |
-| **WSL2 (Ubuntu)** | Local Linux development environment on Windows |
+1. **Code Push:** A developer pushes code changes to the GitHub repository.
+2. **Workflow Trigger:** GitHub Actions detects the push event.
+3. **Environment Setup:** A GitHub-hosted runner prepares the Python environment.
+4. **Dependency Installation:** Required packages are installed using `requirements.txt`.
+5. **Test Execution:** Pytest executes the automated test cases.
+6. **Result Reporting:** GitHub Actions reports whether the workflow passed or failed.
 
----
+No manual test execution is required on the GitHub runner.
 
 ## 📂 Project Structure
 
 ```text
-PulseCI/
+PulseCI-Automated-CI-Pipeline/
+│
 ├── .github/
 │   └── workflows/
-│       └── ci.yml          # GitHub Actions CI workflow definition
-├── app.py                  # Core pricing and discount calculation module
-├── test_app.py             # Pytest suite (normal, boundary, and invalid tests)
-├── requirements.txt        # Project dependencies (pytest)
-├── .gitignore              # Files and folders ignored by Git
-└── README.md               # Project documentation and guide
+│       └── ci.yml
+│
+├── app.py
+├── test_app.py
+├── requirements.txt
+├── README.md
+└── .gitignore
 ```
 
-### File Breakdown:
-- **`app.py`**: Contains core pricing calculations (`calculate_discount`, `calculate_total_price`, and `validate_number`). Includes an executable `main()` demo.
-- **`test_app.py`**: Automated test suite containing 9 test cases covering standard inputs, boundary values (0%, 100%, single item), and invalid inputs (negative prices, strings, invalid ranges).
-- **`requirements.txt`**: Specifies test dependencies (`pytest>=7.4.0`).
-- **`.gitignore`**: Prevents Python cache (`__pycache__`), virtual environments (`.venv`), and test artifacts from polluting Git.
-- **`.github/workflows/ci.yml`**: The CI configuration file instructing GitHub Actions what steps to run on every push and PR.
+### File Responsibilities
 
----
+| File | Description |
+|---|---|
+| `app.py` | E-Commerce Pricing Engine |
+| `test_app.py` | Automated test cases |
+| `requirements.txt` | Python dependencies |
+| `.github/workflows/ci.yml` | GitHub Actions CI configuration |
+| `.gitignore` | Excludes unnecessary files |
 
-## 💻 Local Setup & Installation
+## 🛠️ Technology Stack
 
-Follow these simple steps to run PulseCI on your local machine.
+| Technology | Purpose |
+|---|---|
+| Python | Application development |
+| Pytest | Automated testing |
+| Git | Version control |
+| GitHub | Source code hosting |
+| GitHub Actions | Continuous Integration |
+| pip | Dependency management |
+| Python venv | Isolated development environment |
 
-### Prerequisites
-Make sure you have either **WSL2 (Ubuntu)** or **Windows with Python 3** installed.
+## 🧮 Application Functionality
 
----
+The project uses an E-Commerce Pricing Engine to demonstrate application logic and automated testing.
 
-### Option A: WSL2 Ubuntu (Recommended)
+It calculates the final price of an order using:
 
-1. **Open your WSL2 terminal** and navigate to your project directory:
-   ```bash
-   cd "/mnt/c/Users/cheth/OneDrive/Desktop/PulseCI – Automated CI Pipeline"
-   ```
+- Unit price
+- Product quantity
+- Discount percentage
+- Tax percentage
+- Final calculated amount
 
-2. **Verify Python & Pip are installed:**
-   ```bash
-   python3 --version
-   pip3 --version
-   ```
-   *(If not installed: `sudo apt update && sudo apt install -y python3 python3-pip python3-venv`)*
+### Example Execution
 
-3. **Create and activate a virtual environment:**
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-
-4. **Install project dependencies:**
-   ```bash
-   pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-
----
-
-### Option B: Windows PowerShell
-
-1. **Open PowerShell** in the project folder:
-   ```powershell
-   cd "c:\Users\cheth\OneDrive\Desktop\PulseCI – Automated CI Pipeline"
-   ```
-
-2. **Create and activate a virtual environment:**
-   ```powershell
-   python -m venv .venv
-   .\.venv\Scripts\Activate.ps1
-   ```
-   *(If script execution is restricted: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`)*
-
-3. **Install project dependencies:**
-   ```powershell
-   python -m pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-
----
-
-## 🚀 Running the Application Locally
-
-To execute the application and see the pricing engine in action:
-
-**WSL2 Ubuntu:**
-```bash
-python3 app.py
-```
-
-**Windows PowerShell:**
-```powershell
-python app.py
-```
-
-**Expected Output:**
 ```text
 ==================================================
- PulseCI E-Commerce Pricing Engine 
+ PulseCI E-Commerce Pricing Engine
 ==================================================
 Item Unit Price    : $49.99
 Quantity           : 3
@@ -211,127 +156,182 @@ Final Total Price  : $146.44
 [SUCCESS] Application executed cleanly.
 ```
 
----
+## 🧪 Test Cases
 
-## 🧪 Running Automated Tests
+The project includes nine automated test cases covering normal operations and edge cases.
 
-Run the Pytest suite locally to verify all test cases:
+| # | Test Scenario | Expected Behaviour |
+|---|---|---|
+| 1 | Normal discount calculation | Correct discount |
+| 2 | Normal total price calculation | Correct final amount |
+| 3 | Zero discount percentage | No discount applied |
+| 4 | Full 100% discount | Complete discount applied |
+| 5 | Minimum quantity and zero tax | Correct minimum order calculation |
+| 6 | Discount exceeding maximum percentage | Invalid discount handled |
+| 7 | Negative unit price | Invalid price handled |
+| 8 | Zero quantity | Zero-quantity case handled |
+| 9 | Non-numeric input validation | Invalid input handled |
 
-```bash
+## 💻 Getting Started
+
+Follow these steps to run PulseCI locally on Windows.
+
+### 1. Clone the Repository
+
+```powershell
+git clone https://github.com/Chethana45/PulseCI-Automated-CI-Pipeline.git
+```
+
+### 2. Navigate to the Project
+
+```powershell
+cd PulseCI-Automated-CI-Pipeline
+```
+
+### 3. Create a Virtual Environment
+
+```powershell
+python -m venv .venv
+```
+
+### 4. Activate the Environment
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks script execution, run:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Then activate the environment again.
+
+### 5. Install Dependencies
+
+```powershell
+pip install -r requirements.txt
+```
+
+### 6. Run the Application
+
+```powershell
+python app.py
+```
+
+### 7. Run Automated Tests
+
+```powershell
 pytest -v
 ```
 
-**Expected Output:**
+## 🔄 Running the CI Pipeline
+
+The CI workflow is configured in:
+
 ```text
-============================= test session starts ==============================
+.github/workflows/ci.yml
+```
+
+To trigger the pipeline:
+
+```powershell
+git add .
+git commit -m "Update application"
+git push origin main
+```
+
+Then:
+
+1. Open the GitHub repository.
+2. Navigate to the **Actions** tab.
+3. Select **PulseCI - Automated CI Pipeline**.
+4. Open the latest workflow run.
+5. Inspect the execution steps and test results.
+
+GitHub Actions automatically executes the configured workflow after the push event.
+
+## 📊 Results
+
+<details>
+<summary><b>Local test execution</b></summary>
+
+```text
+===================== test session starts ======================
+
 collected 9 items
 
-test_app.py::test_calculate_discount_normal PASSED                       [ 11%]
-test_app.py::test_calculate_total_price_normal PASSED                    [ 22%]
-test_app.py::test_calculate_discount_zero_percent PASSED                 [ 33%]
-test_app.py::test_calculate_discount_full_hundred_percent PASSED         [ 44%]
-test_app.py::test_calculate_total_price_minimum_quantity_and_zero_tax PASSED [ 55%]
-test_app.py::test_calculate_discount_exceeding_max_percentage PASSED     [ 66%]
-test_app.py::test_calculate_total_price_negative_unit_price PASSED       [ 77%]
-test_app.py::test_calculate_total_price_zero_quantity PASSED             [ 88%]
-test_app.py::test_validate_number_non_numeric_type PASSED                [100%]
+test_app.py::test_calculate_discount_normal PASSED
+test_app.py::test_calculate_total_price_normal PASSED
+test_app.py::test_calculate_discount_zero_percent PASSED
+test_app.py::test_calculate_discount_full_hundred_percent PASSED
+test_app.py::test_calculate_total_price_minimum_quantity_and_zero_tax PASSED
+test_app.py::test_calculate_discount_exceeding_max_percentage PASSED
+test_app.py::test_calculate_total_price_negative_unit_price PASSED
+test_app.py::test_calculate_total_price_zero_quantity PASSED
+test_app.py::test_validate_number_non_numeric_type PASSED
 
-============================== 9 passed in 0.19s ===============================
+====================== 9 passed in 0.09s ======================
 ```
 
-### Test Case Overview:
-1. `test_calculate_discount_normal`: Normal 20% discount calculation.
-2. `test_calculate_total_price_normal`: Full pricing flow with discount and sales tax.
-3. `test_calculate_discount_zero_percent`: Boundary test verifying 0% discount equals $0.
-4. `test_calculate_discount_full_hundred_percent`: Boundary test verifying 100% discount covers full cost.
-5. `test_calculate_total_price_minimum_quantity_and_zero_tax`: Boundary test with quantity 1 and zero tax.
-6. `test_calculate_discount_exceeding_max_percentage`: Error test asserting rejection of > 100% discount.
-7. `test_calculate_total_price_negative_unit_price`: Error test asserting rejection of negative prices.
-8. `test_calculate_total_price_zero_quantity`: Error test asserting quantity cannot be 0.
-9. `test_validate_number_non_numeric_type`: Error test asserting rejection of non-numeric data types.
+</details>
+
+**Verified project outcomes:**
+
+- 9/9 local automated tests passed.
+- Application executed successfully.
+- GitHub Actions workflow completed successfully.
+- Automated testing was triggered by a Git push.
+
+## 🔮 Future Improvements
+
+PulseCI provides a foundation for exploring more advanced DevOps practices.
+
+Potential enhancements:
+
+- 🐳 Docker containerization.
+- 📈 Code coverage reports.
+- 🔍 Static code analysis and linting.
+- 🔐 Security and dependency scanning.
+- 🚀 Automated deployment through a CD pipeline.
+- 📦 Build artifact generation.
+
+## 🎓 Learning Outcomes
+
+Building PulseCI helped me understand how development workflows can be automated using DevOps practices.
+
+Key concepts explored:
+
+- Understanding Continuous Integration.
+- Creating and managing Python virtual environments.
+- Installing and managing project dependencies.
+- Writing automated tests using Pytest.
+- Configuring GitHub Actions workflows.
+- Connecting Git pushes with automated test execution.
+- Understanding successful and failed CI pipeline runs.
+
+The biggest takeaway was understanding how a simple code push can trigger an entire automated verification process.
 
 ---
 
-## ⚙️ How GitHub Actions Works
+## 👩‍💻 Author
 
-The automated pipeline is defined in `.github/workflows/ci.yml`. Here is how each component works:
+**Chethana Sri**
 
-1. **Triggers (`'on':`):**
-   - Listens for `push` events to `main`.
-   - Listens for `pull_request` events targeting `main`.
-2. **Runner (`runs-on: ubuntu-latest`):**
-   - GitHub provisions a fresh, secure Ubuntu Linux virtual environment in the cloud.
-3. **Checkout (`actions/checkout@v4`):**
-   - Clones your repository into the runner's workspace.
-4. **Python Setup (`actions/setup-python@v5`):**
-   - Installs Python 3.12 and enables pip dependency caching.
-5. **Dependency Installation (`pip install`):**
-   - Upgrades pip and installs all packages listed in `requirements.txt`.
-6. **Application Execution:**
-   - Runs `python app.py` to ensure the program executes cleanly without runtime crashes.
-7. **Pytest Suite:**
-   - Runs `pytest -v` to validate all business rules and edge cases.
-8. **Job Status & Summary:**
-   - If all steps exit with code `0`, GitHub marks the workflow with a green checkmark (`✔`) and writes a success summary.
-   - If any step fails (exit code != 0), the workflow turns red (`✖`), writes a failure notice, and halts further progress.
+Computer Science Engineering Student | Aspiring Software Engineer | Exploring DevOps
+
+- GitHub: [@Chethana45](https://github.com/Chethana45)
+- Project Repository: [PulseCI — Automated CI Pipeline](https://github.com/Chethana45/PulseCI-Automated-CI-Pipeline)
 
 ---
 
-## 📤 Pushing to GitHub & Triggering the Pipeline
+<p align="center">
+  <b>Built to learn. Automated to improve. Tested to trust. ⚡</b>
+</p>
 
-Follow these steps to publish your project and trigger your pipeline:
+<p align="center">
+  If you find this project useful, consider giving it a ⭐ on GitHub!
+</p>
 
-### 1. Initialize Git and Commit
-```bash
-git init
-git branch -M main
-git add .
-git commit -m "Build PulseCI automated CI pipeline"
-```
-
-### 2. Configure Remote URL
-```bash
-git remote add origin https://github.com/Chethana45/PulseCI.git
-```
-
-### 3. Push to GitHub
-```bash
-git push -u origin main
-```
-
----
-
-## 📸 Screenshots & Verification
-
-> Once your workflow completes on GitHub, you can add screenshots of your run to this section.
-
-| Workflow Run Overview | Pytest Execution in GitHub Actions |
-| :---: | :---: |
-| *GitHub Actions workflow list with green checkmark (✔)* | *Expanded Pytest step log showing all 9 passed tests* |
-
----
-
-## 🧠 Learning Outcomes
-
-By building and running **PulseCI**, you have mastered several core DevOps principles:
-1. **Continuous Integration (CI):** Understand how automated pipelines replace manual testing and prevent broken code from merging.
-2. **Automated Quality Gates:** Implement unit tests, boundary validations, and error assertions that automatically approve or reject pull requests.
-3. **Infrastructure as Code (IaC) & Workflow as Code:** Write declarative YAML pipelines to provision environments on demand in GitHub's cloud.
-4. **Environment Parity:** Replicate consistent results across Windows, WSL2 Ubuntu, and cloud Linux runners.
-5. **Git Hygiene:** Use `.gitignore` to maintain clean repository trees free of compiled bytecode and local virtual environments.
-
----
-
-## 🔮 Future Enhancements
-
-As you continue your DevOps journey, here are recommended additions to expand PulseCI:
-- [ ] **Code Linting & Formatting:** Add `ruff` or `flake8` to enforce PEP 8 style standards automatically in CI.
-- [ ] **Test Coverage Reports:** Integrate `pytest-cov` and upload coverage badges to [Codecov](https://codecov.io/).
-- [ ] **Multi-Version Matrix Builds:** Test concurrently against Python `3.10`, `3.11`, `3.12`, and `3.13`.
-- [ ] **Security Scanning:** Integrate `bandit` to identify security vulnerabilities in Python code.
-- [ ] **ChatOps Notifications:** Send a Discord or Slack notification when a pipeline fails.
-
----
-
-## 📄 License
-This project is open-source under the [MIT License](LICENSE).
+**License:** This project is licensed under the MIT License.
